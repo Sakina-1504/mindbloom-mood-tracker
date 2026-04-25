@@ -1,48 +1,63 @@
 let selectedMood="";
-let moods=JSON.parse(localStorage.getItem("moods"))||[];
+const tasks=[
+"Drink 2 glasses of water 💧",
+"Take a 10 min walk 🌿",
+"Write 3 gratitudes ✍️",
+"Stretch for 5 minutes 🧘‍♀️",
+"Call someone you love ☎️"
+];
 
-document.getElementById("welcomeText").innerText="Good to see you 💖";
+const positiveQuotes=[
+"You're growing beautifully 🌸",
+"Keep shining ⭐",
+"Proud of your progress 💖"
+];
+const negativeQuotes=[
+"Bad days don’t last 💪",
+"You are stronger than this 🌈",
+"Tomorrow is a fresh start 🌞"
+];
 
-function selectMood(mood){
-selectedMood=mood;
-document.querySelectorAll(".mood").forEach(b=>b.classList.remove("selected"));
-event.target.classList.add("selected");
+window.onload=function(){
+let user=JSON.parse(localStorage.getItem("user"));
+if(user){
+document.getElementById("profileScreen").classList.add("hidden");
+document.getElementById("app").classList.remove("hidden");
+document.getElementById("welcome").innerText="Hi "+user.name+" 💖";
+document.getElementById("dailyTask").innerText="Today's self-care task: "+tasks[new Date().getDay()];
 }
+document.getElementById("streak").innerText=localStorage.getItem("streak")||0;
+};
 
-function nextStep(){
-if(!selectedMood) return alert("Select mood first 😊");
-
-moods.push(selectedMood);
-localStorage.setItem("moods",JSON.stringify(moods));
-
-updateStreak();
-updateWeeklyReport();
-showPopup();
-}
-
-function updateStreak(){
-let streak=localStorage.getItem("streak")||0;
-streak++;
-localStorage.setItem("streak",streak);
-document.getElementById("streak").innerText=streak;
-}
-
-function updateWeeklyReport(){
-let counts={};
-moods.forEach(m=>counts[m]=(counts[m]||0)+1);
-let topMood=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
-document.getElementById("weeklyReport").innerText="This week you felt mostly "+topMood+" ✨";
-}
-
-function resetWeek(){
-localStorage.clear();
+function saveProfile(){
+let user={
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+city:document.getElementById("city").value
+};
+localStorage.setItem("user",JSON.stringify(user));
 location.reload();
 }
 
-function showPopup(){
-document.getElementById("popup").classList.add("showPopup");
+function selectMood(m){selectedMood=m;}
+
+function saveMood(){
+if(!selectedMood) return alert("Select mood 😊");
+
+let streak=Number(localStorage.getItem("streak")||0)+1;
+localStorage.setItem("streak",streak);
+document.getElementById("streak").innerText=streak;
+
+let quote = (selectedMood=="Sad"||selectedMood=="Angry"||selectedMood=="Tired")
+? negativeQuotes[Math.floor(Math.random()*negativeQuotes.length)]
+: positiveQuotes[Math.floor(Math.random()*positiveQuotes.length)];
+
+document.getElementById("popupTitle").innerText="Mood Saved 💖";
+document.getElementById("popupText").innerText=quote;
+document.getElementById("popup").classList.add("show");
 confetti({particleCount:120,spread:80});
 }
+
 function closePopup(){
-document.getElementById("popup").classList.remove("showPopup");
+document.getElementById("popup").classList.remove("show");
 }

@@ -5,44 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MindBloom 🌸</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<!-- PROFILE SCREEN -->
+<div id="profileScreen" class="centerCard">
+  <h1>Welcome to MindBloom 🌸</h1>
+  <input id="name" placeholder="Your Name">
+  <input id="email" placeholder="Email">
+  <input id="city" placeholder="City">
+  <button onclick="saveProfile()">Start My Journey ✨</button>
+</div>
 
-<h1>MindBloom 🌸</h1>
-<h2 id="welcomeText"></h2>
+<!-- MAIN APP -->
+<div id="app" class="container hidden">
 
-<h3>How do you feel today?</h3>
+<h1 id="welcome"></h1>
+<h3 id="dailyTask"></h3>
+
+<h2>How do you feel today?</h2>
 
 <div class="moods">
 <button class="mood" onclick="selectMood('Happy')">😄</button>
-<button class="mood" onclick="selectMood('Okay')">😐</button>
+<button class="mood" onclick="selectMood('Okay')">🙂</button>
 <button class="mood" onclick="selectMood('Sad')">😢</button>
 <button class="mood" onclick="selectMood('Angry')">😡</button>
 <button class="mood" onclick="selectMood('Tired')">😴</button>
 </div>
 
-<textarea id="note" placeholder="What's on your mind?"></textarea>
-
-<button onclick="nextStep()">Next ➡️</button>
+<textarea id="note" placeholder="Write your thoughts..."></textarea>
+<button onclick="saveMood()">Save Today 💖</button>
 
 <h3>🔥 Streak: <span id="streak">0</span> days</h3>
 <p id="weeklyReport"></p>
 
-<button onclick="resetWeek()">Reset Week</button>
-
 </div>
 
-<div class="popup" id="popup">
+<!-- POPUP -->
+<div id="popup" class="popup">
   <div class="popup-content">
-    <h2>✨ Saved Successfully ✨</h2>
-    <p>You are doing amazing 💖</p>
+    <h2 id="popupTitle"></h2>
+    <p id="popupText"></p>
     <button onclick="closePopup()">Continue</button>
   </div>
 </div>
