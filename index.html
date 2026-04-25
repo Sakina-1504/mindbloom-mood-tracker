@@ -5,42 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MindBloom</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
 
-<!-- PROFILE -->
-<div id="profile" class="card">
-<h1>MindBloom 🌸</h1>
-<input id="name" placeholder="Your Name">
-<input id="email" placeholder="Email">
-<input id="city" placeholder="City">
-<button onclick="saveProfile()">Start Journey ✨</button>
+<!-- Onboarding -->
+<div id="onboarding" class="centerBox">
+  <h1>MindBloom 🌿</h1>
+  <p>Track your mind. Grow daily.</p>
+  <input id="name" placeholder="Your Name">
+  <input id="email" placeholder="Email">
+  <button onclick="startApp()">Continue</button>
 </div>
 
-<!-- APP -->
-<div id="app" class="card hidden">
-<h1 id="welcome"></h1>
+<!-- Dashboard -->
+<div id="app" class="hidden">
 
-<h3 id="task"></h3>
+<header>
+  <h2 id="greeting"></h2>
+</header>
 
-<h2>Select your mood today</h2>
+<div class="grid">
 
-<div class="moodRow">
-<span class="mood" onclick="selectMood(this,'Happy')">😄</span>
-<span class="mood" onclick="selectMood(this,'Okay')">🙂</span>
-<span class="mood" onclick="selectMood(this,'Sad')">😢</span>
-<span class="mood" onclick="selectMood(this,'Angry')">😡</span>
-<span class="mood" onclick="selectMood(this,'Tired')">😴</span>
+  <!-- Mood Card -->
+  <div class="card">
+    <h3>How are you feeling today?</h3>
+    <div class="moods">
+      <span onclick="selectMood('Happy')">😄</span>
+      <span onclick="selectMood('Okay')">🙂</span>
+      <span onclick="selectMood('Sad')">😢</span>
+      <span onclick="selectMood('Angry')">😡</span>
+      <span onclick="selectMood('Tired')">😴</span>
+    </div>
+    <p id="feedback"></p>
+  </div>
+
+  <!-- Task Card -->
+  <div class="card">
+    <h3>Today's Self-Care 🌱</h3>
+    <p id="task"></p>
+  </div>
+
+  <!-- Streak Card -->
+  <div class="card">
+    <h3>🔥 Your Streak</h3>
+    <p id="streak"></p>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <h3>Weekly Mood Insight</h3>
+    <canvas id="chart"></canvas>
+  </div>
+
 </div>
-
-<h3 id="thought"></h3>
-
-<h3>🔥 Streak: <span id="streak">0</span></h3>
-
 </div>
 
 <script src="script.js"></script>

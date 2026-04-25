@@ -1,44 +1,63 @@
-let thoughts={
-Happy:"Keep shining 🌟",
+let tasks=[
+"Take a 10-minute walk 🌿",
+"Drink 2 glasses of water 💧",
+"Stretch for 5 minutes 🧘‍♀️",
+"Write 3 gratitudes ✍️",
+"Call a friend ☎️"
+];
+
+let quotes={
+Happy:"Amazing! Keep shining 🌟",
 Okay:"Small progress is still progress 💪",
-Sad:"You are stronger than this 💖",
+Sad:"You are stronger than you think 💖",
 Angry:"Take a deep breath 🌿",
 Tired:"Rest is productive too 😴"
 };
 
-const tasks=[
-"Drink water 💧","Go for walk 🌿","Stretch 🧘‍♀️",
-"Call a friend ☎️","Write gratitude ✍️"
-];
-
 window.onload=function(){
-let user=JSON.parse(localStorage.getItem("user"));
+let user=localStorage.getItem("user");
 if(user){
-document.getElementById("profile").classList.add("hidden");
+document.getElementById("onboarding").style.display="none";
 document.getElementById("app").classList.remove("hidden");
-document.getElementById("welcome").innerText="Hi "+user.name+" 💖";
-document.getElementById("task").innerText="Today's task: "+tasks[new Date().getDay()];
-document.getElementById("streak").innerText=localStorage.getItem("streak")||0;
-}
+document.getElementById("greeting").innerText="Good to see you, "+user;
 }
 
-function saveProfile(){
-let user={
-name:name.value,email:email.value,city:city.value
-};
-localStorage.setItem("user",JSON.stringify(user));
+document.getElementById("task").innerText=tasks[new Date().getDay()];
+document.getElementById("streak").innerText=localStorage.getItem("streak")||0+" days";
+
+loadChart();
+}
+
+function startApp(){
+let name=document.getElementById("name").value;
+localStorage.setItem("user",name);
 location.reload();
 }
 
-function selectMood(el,mood){
-document.querySelectorAll(".mood").forEach(m=>m.classList.remove("selected"));
-el.classList.add("selected");
-
-document.getElementById("thought").innerText=thoughts[mood];
+function selectMood(mood){
+document.getElementById("feedback").innerText=quotes[mood];
 
 let streak=Number(localStorage.getItem("streak")||0)+1;
 localStorage.setItem("streak",streak);
-document.getElementById("streak").innerText=streak;
+document.getElementById("streak").innerText=streak+" days";
 
-confetti({particleCount:80,spread:70});
+let moods=JSON.parse(localStorage.getItem("moods"))||[];
+moods.push(mood);
+localStorage.setItem("moods",JSON.stringify(moods));
+
+loadChart();
+}
+
+function loadChart(){
+let moods=JSON.parse(localStorage.getItem("moods"))||[];
+let counts={Happy:0,Okay:0,Sad:0,Angry:0,Tired:0};
+moods.forEach(m=>counts[m]++);
+
+new Chart(document.getElementById("chart"),{
+type:"bar",
+data:{
+labels:Object.keys(counts),
+datasets:[{data:Object.values(counts)}]
+}
+});
 }
