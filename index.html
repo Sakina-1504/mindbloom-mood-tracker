@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MindGlow</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 *{box-sizing:border-box}
 
@@ -6,27 +13,27 @@ body{
   margin:0;
   min-height:100vh;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
-  text-align:center;
   background:linear-gradient(135deg,#89f7fe,#66a6ff,#c3cfe2);
-  color:#333;
   transition:.4s;
-  padding:20px;
 }
 
-/* DARK MODE */
+/* Dark Mode */
 .dark{
   background:linear-gradient(135deg,#141e30,#243b55);
   color:white;
 }
 
-/* Header */
-h1{margin-bottom:5px}
-p{margin-top:0;margin-bottom:20px}
+/* Main wrapper */
+.app{
+  width:100%;
+  max-width:500px;
+  text-align:center;
+  padding:20px;
+}
 
-/* 🌙 Moon */
+/* Moon */
 .moon{
  position:fixed;
  bottom:20px;
@@ -35,22 +42,18 @@ p{margin-top:0;margin-bottom:20px}
  cursor:pointer;
 }
 
-/* Slides */
-.slide{display:none;width:100%}
-.active{display:block}
-
-/* Card responsive */
+/* Card */
 .card{
  background:white;
- width:100%;
- max-width:420px;
  padding:30px;
  border-radius:22px;
  box-shadow:0 15px 35px rgba(0,0,0,.15);
 }
 .dark .card{background:#1e293b}
 
-/* Inputs */
+.slide{display:none}
+.active{display:block}
+
 input,select{
  width:100%;
  padding:14px;
@@ -60,7 +63,6 @@ input,select{
  font-size:16px;
 }
 
-/* Button */
 button{
  width:100%;
  padding:16px;
@@ -73,34 +75,136 @@ button{
  margin-top:15px;
 }
 
-/* Emojis responsive */
-.emoji{
- font-size:36px;
- cursor:pointer;
- padding:8px;
- display:inline-block;
-}
+.emoji{font-size:36px;cursor:pointer;padding:8px}
 .emoji:hover{transform:scale(1.2)}
 
-/* Popup */
-#popup{
- display:none;
- background:#f0f8ff;
- padding:20px;
- border-radius:15px;
- margin-top:20px;
-}
+#popup{display:none;background:#f0f8ff;padding:20px;border-radius:15px;margin-top:20px;}
 .dark #popup{background:#334155}
 
-/* Quote + Tip */
 #quote{font-size:24px;color:#7c3aed;font-weight:bold;}
 #tip{font-size:18px;color:#16a34a;}
 .dark #quote{color:#c084fc;}
 .dark #tip{color:#4ade80}
-
-/* 📱 Mobile tweaks */
-@media(max-width:500px){
- h1{font-size:26px}
- .emoji{font-size:32px}
-}
 </style>
+</head>
+
+<body>
+
+<div class="moon" onclick="toggleTheme()">🌙</div>
+
+<div class="app">
+<h1>MindGlow</h1>
+<p>Track your mind, glow daily</p>
+
+<!-- Slide 1 -->
+<div class="slide active" id="slide1">
+<div class="card">
+<h2>Your Details</h2>
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<select id="gender">
+<option value="">Select Gender</option>
+<option>Female</option>
+<option>Male</option>
+</select>
+<button onclick="saveUser()">Next ➜</button>
+</div>
+</div>
+
+<!-- Slide 2 -->
+<div class="slide" id="slide2">
+<div class="card">
+<h2 id="hello"></h2>
+<h3>How are you feeling today?</h3>
+
+<span class="emoji" onclick="selectMood('happy')">😊</span>
+<span class="emoji" onclick="selectMood('sad')">😔</span>
+<span class="emoji" onclick="selectMood('angry')">😤</span>
+<span class="emoji" onclick="selectMood('love')">🥰</span>
+<span class="emoji" onclick="selectMood('tired')">😴</span>
+<span class="emoji" onclick="selectMood('excited')">🤩</span>
+<span class="emoji" onclick="selectMood('stressed')">😰</span>
+<span class="emoji" onclick="selectMood('calm')">😌</span>
+
+<div id="popup">
+<h3 id="quote"></h3>
+<p id="tip"></p>
+<button onclick="goToChart()">See Weekly Report ➜</button>
+</div>
+</div>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide" id="slide3">
+<div class="card">
+<h2>Your Weekly Mood Report</h2>
+<canvas id="chart"></canvas>
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleTheme(){
+ document.body.classList.toggle("dark");
+}
+
+document.getElementById("email").addEventListener("blur",function(){
+ let users=JSON.parse(localStorage.getItem("users"))||{};
+ if(users[this.value]){
+  document.getElementById("name").value=users[this.value].name;
+  document.getElementById("gender").value=users[this.value].gender;
+ }
+});
+
+function saveUser(){
+ let name=document.getElementById("name").value.trim();
+ let email=document.getElementById("email").value.trim();
+ let gender=document.getElementById("gender").value;
+
+ if(!name||!email||!gender){
+  alert("Please fill all details 😊");
+  return;
+ }
+
+ let users=JSON.parse(localStorage.getItem("users"))||{};
+ if(!users[email]){
+  if(confirm("Save your details?")){
+    users[email]={name,gender};
+    localStorage.setItem("users",JSON.stringify(users));
+  }
+ }
+
+ showSlide(2);
+ document.getElementById("hello").innerText="Hello "+name+" 💙";
+}
+
+function showSlide(n){
+ document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
+ document.getElementById("slide"+n).classList.add("active");
+}
+
+const quotes={happy:"You’re glowing today ✨",sad:"Storms don’t last forever ☀️",angry:"Pause. Breathe. Reset 🌿",love:"Your heart is beautiful 💖",tired:"Rest is productive 💤",excited:"Big things coming 🚀",stressed:"One step at a time 🌼",calm:"Peace looks good on you 🌸"};
+const tips={happy:"Share your smile 😊",sad:"Call loved one 💛",angry:"Take a break 🌿",love:"Write gratitude 💖",tired:"Drink water 😴",excited:"Write goals ✍️",stressed:"Short walk 🚶",calm:"Meditation 🧘"};
+
+function selectMood(mood){
+ document.getElementById("quote").innerText=quotes[mood];
+ document.getElementById("tip").innerText=tips[mood];
+ document.getElementById("popup").style.display="block";
+
+ let week=JSON.parse(localStorage.getItem("week"))||[];
+ week.push(mood);
+ localStorage.setItem("week",JSON.stringify(week));
+}
+
+function goToChart(){
+ showSlide(3);
+ let week=JSON.parse(localStorage.getItem("week"))||[];
+ let count={happy:0,sad:0,angry:0,love:0,tired:0,excited:0,stressed:0,calm:0};
+ week.forEach(m=>count[m]++);
+ new Chart(chart,{type:"bar",data:{labels:Object.keys(count),datasets:[{data:Object.values(count)}]}});
+}
+</script>
+
+</body>
+</html>
