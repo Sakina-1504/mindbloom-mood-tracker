@@ -1,67 +1,220 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>MindBloom 🌸</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>MindGlow</title>
 
-<!-- Google font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-<!-- Chart JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  font-family: 'Poppins', sans-serif;
+  margin:0;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color:white;
+  text-align:center;
+}
+
+/* slides */
+.slide{
+  display:none;
+  padding:40px;
+}
+.active{display:block;}
+
+.card{
+  background:white;
+  color:#333;
+  max-width:420px;
+  margin:auto;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+h1{margin-bottom:5px;}
+.tag{color:#ddd;margin-bottom:30px}
+
+input{
+  width:90%;
+  padding:12px;
+  margin:10px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+
+button{
+  padding:14px 35px;
+  border:none;
+  border-radius:30px;
+  background:#667eea;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  margin-top:15px;
+}
+
+/* emojis */
+.emoji{
+  font-size:35px;
+  cursor:pointer;
+  padding:10px;
+  transition:.2s;
+}
+.emoji:hover{transform:scale(1.3)}
+
+/* popup */
+#popup{
+  display:none;
+  background:white;
+  color:#333;
+  padding:20px;
+  border-radius:15px;
+  margin-top:20px;
+}
+
+.tip{
+  color:#667eea;
+  font-weight:bold;
+}
+</style>
 </head>
 
 <body>
 
-<button class="themeBtn" onclick="toggleTheme()">🌙</button>
+<h1>🌙 MindGlow</h1>
+<div class="tag">Track your mind, glow daily</div>
 
-<div class="app">
+<!-- SLIDE 1 -->
+<div class="slide active" id="slide1">
+<div class="card">
+<h2>Your Details</h2>
 
-<!-- SLIDE 1 PROFILE -->
-<section id="slide1">
-<h1>MindBloom 🌸</h1>
-<p class="tag">Track your mind. Grow daily.</p>
-
-<input id="name" placeholder="Name">
-<input id="age" placeholder="Age">
-<input id="gender" placeholder="Gender">
+<input id="name" placeholder="Full Name">
 <input id="email" placeholder="Email">
 
-<button class="mainBtn" onclick="saveProfile()">Next →</button>
-</section>
+<p>Gender</p>
+<label><input type="radio" name="gender" value="Female"> Female</label>
+<label><input type="radio" name="gender" value="Male"> Male</label>
+<label><input type="radio" name="gender" value="Prefer not"> Prefer not to say</label>
 
+<br>
+<button onclick="saveUser()">Next ➜</button>
+</div>
+</div>
 
-<!-- SLIDE 2 MOOD -->
-<section id="slide2" class="hidden">
-<h2 id="greeting"></h2>
+<!-- SLIDE 2 -->
+<div class="slide" id="slide2">
+<div class="card">
+<h2 id="hello"></h2>
 <h3>How are you feeling today?</h3>
 
-<div class="moods">
-<span onclick="selectMood('happy')">😄</span>
-<span onclick="selectMood('okay')">🙂</span>
-<span onclick="selectMood('sad')">😢</span>
-<span onclick="selectMood('angry')">😡</span>
-<span onclick="selectMood('tired')">😴</span>
+<div>
+<span class="emoji" onclick="selectMood('happy')">😄</span>
+<span class="emoji" onclick="selectMood('sad')">😢</span>
+<span class="emoji" onclick="selectMood('angry')">😡</span>
+<span class="emoji" onclick="selectMood('love')">😍</span>
+<span class="emoji" onclick="selectMood('tired')">😴</span>
+<span class="emoji" onclick="selectMood('excited')">🤩</span>
+<span class="emoji" onclick="selectMood('stressed')">😰</span>
+<span class="emoji" onclick="selectMood('calm')">😌</span>
 </div>
 
-<div id="quoteBox"></div>
+<div id="popup">
+<h3 id="quote"></h3>
+<p class="tip" id="tip"></p>
+<button onclick="goToChart()">See My Weekly Report ➜</button>
+</div>
 
-<h3>Your Goal 🎯</h3>
-<input id="goalInput" placeholder="Drink water / Study 2hr">
-<button onclick="saveGoal()">Add</button>
-<ul id="goalList"></ul>
+</div>
+</div>
 
-<button class="mainBtn" onclick="goReport()">View Weekly Report →</button>
-</section>
-
-
-<!-- SLIDE 3 REPORT -->
-<section id="slide3" class="hidden">
-<h2>Your Weekly Mood Report 📊</h2>
+<!-- SLIDE 3 -->
+<div class="slide" id="slide3">
+<div class="card">
+<h2>Your Weekly Mood Report</h2>
 <canvas id="chart"></canvas>
-</section>
-
 </div>
-<script src="script.js"></script>
+</div>
+
+<script>
+let user=JSON.parse(localStorage.getItem("user"));
+
+if(user){
+ document.getElementById("name").value=user.name;
+ document.getElementById("email").value=user.email;
+}
+
+function saveUser(){
+ let name=document.getElementById("name").value;
+ let email=document.getElementById("email").value;
+ let gender=document.querySelector('input[name="gender"]:checked');
+
+ if(!name||!email||!gender){alert("Fill all details");return;}
+
+ user={name,email,gender:gender.value};
+ localStorage.setItem("user",JSON.stringify(user));
+
+ showSlide(2);
+ document.getElementById("hello").innerText="Hello "+name+" 💛";
+}
+
+function showSlide(n){
+ document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
+ document.getElementById("slide"+n).classList.add("active");
+}
+
+const quotes={
+happy:["Keep shining 🌟","You’re doing amazing!"],
+sad:["Tough times don’t last 💙","You are stronger than you think"],
+angry:["Breathe in… breathe out 🌿","Pause before reacting"],
+love:["Spread kindness 💖","Your heart is beautiful"],
+tired:["Rest is productive 😴","Recharge yourself"],
+excited:["Great things ahead 🚀","Keep the momentum!"],
+stressed:["One step at a time 🌼","You got this!"],
+calm:["Peace looks good on you 🌸","Stay centered"]
+};
+
+const tips={
+happy:"Share your happiness 😊",
+sad:"Talk to someone you trust 💛",
+angry:"Take a deep breath break 🌿",
+love:"Express gratitude today 💖",
+tired:"Drink water & rest 😴",
+excited:"Write your goals 🚀",
+stressed:"Take a short walk 🌼",
+calm:"Meditate for 5 minutes 🧘‍♀️"
+};
+
+function selectMood(mood){
+ let q=quotes[mood][Math.floor(Math.random()*2)];
+ document.getElementById("quote").innerText=q;
+ document.getElementById("tip").innerText=tips[mood];
+ document.getElementById("popup").style.display="block";
+
+ let week=JSON.parse(localStorage.getItem("week"))||[];
+ week.push(mood);
+ localStorage.setItem("week",JSON.stringify(week));
+}
+
+function goToChart(){
+ showSlide(3);
+
+ let week=JSON.parse(localStorage.getItem("week"))||[];
+ let count={happy:0,sad:0,angry:0,love:0,tired:0,excited:0,stressed:0,calm:0};
+
+ week.forEach(m=>count[m]++);
+
+ new Chart(document.getElementById("chart"),{
+ type:"bar",
+ data:{
+ labels:Object.keys(count),
+ datasets:[{data:Object.values(count)}]
+ }
+ });
+}
+</script>
+
 </body>
 </html>
