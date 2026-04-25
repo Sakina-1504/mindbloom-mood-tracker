@@ -12,6 +12,12 @@ body{
   text-align:center;
   background:linear-gradient(135deg,#89f7fe,#66a6ff,#c3cfe2);
   color:#333;
+  transition:0.4s;
+}
+
+.dark{
+  background:linear-gradient(135deg,#141e30,#243b55);
+  color:white;
 }
 
 .moon{
@@ -19,6 +25,7 @@ body{
  bottom:20px;
  right:20px;
  font-size:38px;
+ cursor:pointer;
 }
 
 .slide{display:none;padding:40px;}
@@ -32,6 +39,8 @@ body{
  border-radius:20px;
  box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
+
+.dark .card{background:#1e293b;}
 
 input,select{
  width:90%;
@@ -56,6 +65,11 @@ button{
 .emoji{font-size:38px;cursor:pointer;padding:10px;transition:.2s;}
 .emoji:hover{transform:scale(1.3)}
 
+#quote{font-size:24px;color:#7c3aed;font-weight:bold;}
+#tip{font-size:18px;color:#16a34a;}
+.dark #quote{color:#c084fc;}
+.dark #tip{color:#4ade80;}
+
 #popup{
  display:none;
  background:#f0f8ff;
@@ -63,12 +77,13 @@ button{
  border-radius:15px;
  margin-top:20px;
 }
+.dark #popup{background:#334155;}
 </style>
 </head>
 
 <body>
 
-<div class="moon">🌙</div>
+<div class="moon" onclick="toggleTheme()">🌙</div>
 <h1>MindGlow</h1>
 <p>Track your mind, glow daily</p>
 
@@ -78,13 +93,11 @@ button{
 <h2>Your Details</h2>
 <input id="name" placeholder="Full Name">
 <input id="email" placeholder="Email">
-
 <select id="gender">
 <option value="">Select Gender</option>
 <option>Female</option>
 <option>Male</option>
 </select>
-
 <button onclick="saveUser()">Next ➜</button>
 </div>
 </div>
@@ -121,7 +134,23 @@ button{
 </div>
 
 <script>
-// Auto-fill only AFTER first submit
+// 🌙 Theme toggle
+function toggleTheme(){
+ document.body.classList.toggle("dark");
+ if(document.body.classList.contains("dark")){
+   localStorage.setItem("theme","dark");
+   document.querySelector(".moon").innerHTML="☀️";
+ }else{
+   localStorage.setItem("theme","light");
+   document.querySelector(".moon").innerHTML="🌙";
+ }
+}
+if(localStorage.getItem("theme")=="dark"){
+ document.body.classList.add("dark");
+ document.querySelector(".moon").innerHTML="☀️";
+}
+
+// Save user
 let user = JSON.parse(localStorage.getItem("user"));
 if(user){
  document.getElementById("name").value=user.name;
@@ -129,17 +158,11 @@ if(user){
  document.getElementById("gender").value=user.gender;
 }
 
-// FIXED NEXT BUTTON
 function saveUser(){
  let name=document.getElementById("name").value;
  let email=document.getElementById("email").value;
  let gender=document.getElementById("gender").value;
-
- if(!name || !email || !gender){
-   alert("Please fill all details 😊");
-   return;
- }
-
+ if(!name||!email||!gender){alert("Fill details 😊");return;}
  localStorage.setItem("user",JSON.stringify({name,email,gender}));
  showSlide(2);
  document.getElementById("hello").innerText="Hello "+name+" 💙";
