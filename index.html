@@ -1,72 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MindBloom 🌸</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="style.css">
+
+<!-- Google font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Chart JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<!-- RETURN USER POPUP -->
-<div id="returnPopup" class="popup hidden">
-  <div class="popupBox">
-    <h2 id="welcomeBack"></h2>
-    <button class="pinkBtn" onclick="useSaved()">✨ Use saved details</button>
-<button class="pinkBtn" onclick="editDetails()">✏ Edit details</button>
-  </div>
-</div>
+<button class="themeBtn" onclick="toggleTheme()">🌙</button>
 
-<!-- DARK MODE TOGGLE -->
-<div class="themeToggle" onclick="toggleTheme()">🌙</div>
+<div class="app">
 
 <!-- SLIDE 1 PROFILE -->
-<section id="slide1" class="slide">
-  <h1>MindBloom 🌸</h1>
-  <p>Track your mind. Grow daily.</p>
+<section id="slide1">
+<h1>MindBloom 🌸</h1>
+<p class="tag">Track your mind. Grow daily.</p>
 
-  <input id="name" placeholder="Name">
-  <input id="age" placeholder="Age">
-  <input id="gender" placeholder="Gender">
-  <input id="email" placeholder="Email">
+<input id="name" placeholder="Name">
+<input id="age" placeholder="Age">
+<input id="gender" placeholder="Gender">
+<input id="email" placeholder="Email">
 
-  <button onclick="saveProfile()">Next →</button>
+<button class="mainBtn" onclick="saveProfile()">Next →</button>
 </section>
+
 
 <!-- SLIDE 2 MOOD -->
-<section id="slide2" class="slide hidden">
-  <h2 id="greeting"></h2>
-  <h3>How are you feeling today?</h3>
+<section id="slide2" class="hidden">
+<h2 id="greeting"></h2>
+<h3>How are you feeling today?</h3>
 
-  <div class="moods">
-    <span onclick="selectMood('happy')">😄</span>
-    <span onclick="selectMood('okay')">🙂</span>
-    <span onclick="selectMood('sad')">😢</span>
-    <span onclick="selectMood('angry')">😡</span>
-    <span onclick="selectMood('tired')">😴</span>
-  </div>
+<div class="moods">
+<span onclick="selectMood('happy')">😄</span>
+<span onclick="selectMood('okay')">🙂</span>
+<span onclick="selectMood('sad')">😢</span>
+<span onclick="selectMood('angry')">😡</span>
+<span onclick="selectMood('tired')">😴</span>
+</div>
 
-  <div id="quoteBox"></div>
+<div id="quoteBox"></div>
 
-  <h3>Your Goal 🎯</h3>
-  <input id="goalInput" placeholder="Add daily goal">
-  <button onclick="saveGoal()">Save Goal</button>
-  <ul id="goalList"></ul>
+<h3>Your Goal 🎯</h3>
+<input id="goalInput" placeholder="Drink water / Study 2hr">
+<button onclick="saveGoal()">Add</button>
+<ul id="goalList"></ul>
 
-  <button onclick="goReport()">View Weekly Report →</button>
+<button class="mainBtn" onclick="goReport()">View Weekly Report →</button>
 </section>
+
 
 <!-- SLIDE 3 REPORT -->
-<section id="slide3" class="slide hidden">
-  <h2>Your Weekly Mood Report 📊</h2>
-  <canvas id="chart"></canvas>
-  <div id="badges"></div>
+<section id="slide3" class="hidden">
+<h2>Your Weekly Mood Report 📊</h2>
+<canvas id="chart"></canvas>
 </section>
 
+</div>
 <script src="script.js"></script>
 </body>
 </html>
