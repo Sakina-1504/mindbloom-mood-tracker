@@ -14,10 +14,12 @@ body{
   color:#333;
   transition:0.4s;
 }
+
 .dark{
   background:linear-gradient(135deg,#141e30,#243b55);
   color:white;
 }
+
 .moon{
  position:fixed;
  bottom:20px;
@@ -25,8 +27,10 @@ body{
  font-size:38px;
  cursor:pointer;
 }
+
 .slide{display:none;padding:40px;}
 .active{display:block;}
+
 .card{
  background:white;
  max-width:420px;
@@ -35,6 +39,7 @@ body{
  border-radius:20px;
  box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
+
 .dark .card{background:#1e293b;}
 
 input,select{
@@ -45,6 +50,7 @@ input,select{
  border:1px solid #ccc;
  font-size:16px;
 }
+
 button{
  padding:16px 40px;
  border:none;
@@ -55,12 +61,22 @@ button{
  cursor:pointer;
  margin-top:15px;
 }
-.emoji{font-size:38px;cursor:pointer;padding:10px;}
+
+.emoji{font-size:38px;cursor:pointer;padding:10px;transition:.2s;}
+.emoji:hover{transform:scale(1.3)}
+
 #quote{font-size:24px;color:#7c3aed;font-weight:bold;}
 #tip{font-size:18px;color:#16a34a;}
 .dark #quote{color:#c084fc;}
 .dark #tip{color:#4ade80;}
-#popup{display:none;background:#f0f8ff;padding:20px;border-radius:15px;margin-top:20px;}
+
+#popup{
+ display:none;
+ background:#f0f8ff;
+ padding:20px;
+ border-radius:15px;
+ margin-top:20px;
+}
 .dark #popup{background:#334155;}
 </style>
 </head>
@@ -71,7 +87,7 @@ button{
 <h1>MindGlow</h1>
 <p>Track your mind, glow daily</p>
 
-<!-- Slide 1 -->
+<!-- SLIDE 1 -->
 <div class="slide active" id="slide1">
 <div class="card">
 <h2>Your Details</h2>
@@ -86,7 +102,7 @@ button{
 </div>
 </div>
 
-<!-- Slide 2 -->
+<!-- SLIDE 2 -->
 <div class="slide" id="slide2">
 <div class="card">
 <h2 id="hello"></h2>
@@ -109,7 +125,7 @@ button{
 </div>
 </div>
 
-<!-- Slide 3 -->
+<!-- SLIDE 3 -->
 <div class="slide" id="slide3">
 <div class="card">
 <h2>Your Weekly Mood Report</h2>
@@ -121,38 +137,35 @@ button{
 // 🌙 Theme toggle
 function toggleTheme(){
  document.body.classList.toggle("dark");
- localStorage.setItem("theme",document.body.classList.contains("dark"));
+ if(document.body.classList.contains("dark")){
+   localStorage.setItem("theme","dark");
+   document.querySelector(".moon").innerHTML="☀️";
+ }else{
+   localStorage.setItem("theme","light");
+   document.querySelector(".moon").innerHTML="🌙";
+ }
 }
-if(localStorage.getItem("theme")=="true") document.body.classList.add("dark");
+if(localStorage.getItem("theme")=="dark"){
+ document.body.classList.add("dark");
+ document.querySelector(".moon").innerHTML="☀️";
+}
 
-// 🔹 Load user when email typed
-document.getElementById("email").addEventListener("blur",function(){
- let users=JSON.parse(localStorage.getItem("users"))||{};
- let email=this.value;
- if(users[email]){
-   document.getElementById("name").value=users[email].name;
-   document.getElementById("gender").value=users[email].gender;
- }
-});
+// Save user
+let user = JSON.parse(localStorage.getItem("user"));
+if(user){
+ document.getElementById("name").value=user.name;
+ document.getElementById("email").value=user.email;
+ document.getElementById("gender").value=user.gender;
+}
 
-// 🔹 Save user (ASK FIRST TIME)
 function saveUser(){
- let name=nameInput.value;
- let email=emailInput.value;
- let gender=genderInput.value;
-
+ let name=document.getElementById("name").value;
+ let email=document.getElementById("email").value;
+ let gender=document.getElementById("gender").value;
  if(!name||!email||!gender){alert("Fill details 😊");return;}
-
- let users=JSON.parse(localStorage.getItem("users"))||{};
- if(!users[email]){
-   if(confirm("Save your details for next time?")){
-     users[email]={name,gender};
-     localStorage.setItem("users",JSON.stringify(users));
-   }
- }
-
+ localStorage.setItem("user",JSON.stringify({name,email,gender}));
  showSlide(2);
- hello.innerText="Hello "+name+" 💙";
+ document.getElementById("hello").innerText="Hello "+name+" 💙";
 }
 
 function showSlide(n){
@@ -174,18 +187,18 @@ calm:"Peace looks good on you 🌸"
 const tips={
 happy:"Share your smile today 😊",
 sad:"Call a loved one 💛",
-angry:"Take a break 🌿",
+angry:"Take a 5-min break 🌿",
 love:"Write gratitude list 💖",
-tired:"Drink water 😴",
-excited:"Write goals ✍️",
+tired:"Drink water & rest 😴",
+excited:"Write your goals ✍️",
 stressed:"Take a short walk 🚶",
-calm:"Try meditation 🧘"
+calm:"Try 5-min meditation 🧘"
 };
 
 function selectMood(mood){
- quote.innerText=quotes[mood];
- tip.innerText=tips[mood];
- popup.style.display="block";
+ document.getElementById("quote").innerText=quotes[mood];
+ document.getElementById("tip").innerText=tips[mood];
+ document.getElementById("popup").style.display="block";
 
  let week=JSON.parse(localStorage.getItem("week"))||[];
  week.push(mood);
