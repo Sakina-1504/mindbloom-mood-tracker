@@ -1,50 +1,48 @@
-let selectedMood = "";
+let selectedMood="";
+let moods=JSON.parse(localStorage.getItem("moods"))||[];
+
+document.getElementById("welcomeText").innerText="Good to see you 💖";
 
 function selectMood(mood){
-    selectedMood = mood;
-
-    // remove highlight from all buttons
-    const buttons = document.querySelectorAll(".moods button");
-    buttons.forEach(btn => btn.classList.remove("selected"));
-
-    // highlight clicked button
-    event.target.classList.add("selected");
+selectedMood=mood;
+document.querySelectorAll(".mood").forEach(b=>b.classList.remove("selected"));
+event.target.classList.add("selected");
 }
 
-function saveMood(){
-    if(selectedMood === ""){
-        alert("Please select a mood!");
-        return;
-    }
+function nextStep(){
+if(!selectedMood) return alert("Select mood first 😊");
 
-    const note = document.getElementById("note").value;
-    const date = new Date().toLocaleDateString();
+moods.push(selectedMood);
+localStorage.setItem("moods",JSON.stringify(moods));
 
-    const moodEntry = {
-        mood: selectedMood,
-        note: note,
-        date: date
-    };
-
-    let moods = JSON.parse(localStorage.getItem("moods")) || [];
-    moods.push(moodEntry);
-
-    localStorage.setItem("moods", JSON.stringify(moods));
-
-    showHistory();
+updateStreak();
+updateWeeklyReport();
+showPopup();
 }
 
-function showHistory(){
-    const history = document.getElementById("history");
-    history.innerHTML = "";
-
-    const moods = JSON.parse(localStorage.getItem("moods")) || [];
-
-    moods.reverse().forEach(entry => {
-        const li = document.createElement("li");
-        li.innerHTML = `<b>${entry.date}</b> - ${entry.mood} <br> ${entry.note}`;
-        history.appendChild(li);
-    });
+function updateStreak(){
+let streak=localStorage.getItem("streak")||0;
+streak++;
+localStorage.setItem("streak",streak);
+document.getElementById("streak").innerText=streak;
 }
 
-showHistory();
+function updateWeeklyReport(){
+let counts={};
+moods.forEach(m=>counts[m]=(counts[m]||0)+1);
+let topMood=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
+document.getElementById("weeklyReport").innerText="This week you felt mostly "+topMood+" ✨";
+}
+
+function resetWeek(){
+localStorage.clear();
+location.reload();
+}
+
+function showPopup(){
+document.getElementById("popup").classList.add("showPopup");
+confetti({particleCount:120,spread:80});
+}
+function closePopup(){
+document.getElementById("popup").classList.remove("showPopup");
+}
