@@ -10,16 +10,15 @@ body{
   font-family:'Segoe UI',sans-serif;
   margin:0;
   text-align:center;
-  background:linear-gradient(135deg,#ff9a9e,#fad0c4,#fad0c4);
+  background:linear-gradient(135deg,#89f7fe,#66a6ff,#c3cfe2);
   color:#333;
 }
 
-/* moon */
 .moon{
  position:fixed;
- bottom:15px;
- right:15px;
- font-size:35px;
+ bottom:20px;
+ right:20px;
+ font-size:38px;
 }
 
 .slide{display:none;padding:40px;}
@@ -31,7 +30,7 @@ body{
  margin:auto;
  padding:30px;
  border-radius:20px;
- box-shadow:0 10px 25px rgba(0,0,0,.2);
+ box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
 
 input,select{
@@ -44,27 +43,22 @@ input,select{
 }
 
 button{
- padding:14px 35px;
+ padding:16px 40px;
  border:none;
  border-radius:30px;
- background:#ff758c;
+ background:#4facfe;
  color:white;
  font-size:18px;
  cursor:pointer;
  margin-top:15px;
 }
 
-.emoji{
- font-size:38px;
- cursor:pointer;
- padding:10px;
- transition:.2s;
-}
+.emoji{font-size:38px;cursor:pointer;padding:10px;transition:.2s;}
 .emoji:hover{transform:scale(1.3)}
 
 #popup{
  display:none;
- background:#fff0f5;
+ background:#f0f8ff;
  padding:20px;
  border-radius:15px;
  margin-top:20px;
@@ -82,7 +76,6 @@ button{
 <div class="slide active" id="slide1">
 <div class="card">
 <h2>Your Details</h2>
-
 <input id="name" placeholder="Full Name">
 <input id="email" placeholder="Email">
 
@@ -116,7 +109,6 @@ button{
 <p id="tip"></p>
 <button onclick="goToChart()">See Weekly Report ➜</button>
 </div>
-
 </div>
 </div>
 
@@ -129,26 +121,28 @@ button{
 </div>
 
 <script>
-let firstTime = !localStorage.getItem("visited");
-
-if(!firstTime){
- let user=JSON.parse(localStorage.getItem("user"));
- if(user){
-  document.getElementById("name").value=user.name;
-  document.getElementById("email").value=user.email;
-  document.getElementById("gender").value=user.gender;
- }
+// Auto-fill only AFTER first submit
+let user = JSON.parse(localStorage.getItem("user"));
+if(user){
+ document.getElementById("name").value=user.name;
+ document.getElementById("email").value=user.email;
+ document.getElementById("gender").value=user.gender;
 }
-localStorage.setItem("visited",true);
 
+// FIXED NEXT BUTTON
 function saveUser(){
- let name=nameInput.value;
- let email=emailInput.value;
- let gender=genderInput.value;
- if(!name||!email||!gender){alert("Fill all fields");return;}
+ let name=document.getElementById("name").value;
+ let email=document.getElementById("email").value;
+ let gender=document.getElementById("gender").value;
+
+ if(!name || !email || !gender){
+   alert("Please fill all details 😊");
+   return;
+ }
+
  localStorage.setItem("user",JSON.stringify({name,email,gender}));
  showSlide(2);
- hello.innerText="Hello "+name+" 💛";
+ document.getElementById("hello").innerText="Hello "+name+" 💙";
 }
 
 function showSlide(n){
@@ -158,7 +152,7 @@ function showSlide(n){
 
 const quotes={
 happy:"You’re glowing today ✨",
-sad:"Storms pass, sunshine stays ☀️",
+sad:"Storms don’t last forever ☀️",
 angry:"Pause. Breathe. Reset 🌿",
 love:"Your heart is beautiful 💖",
 tired:"Rest is productive 💤",
@@ -175,13 +169,13 @@ love:"Write gratitude list 💖",
 tired:"Drink water & rest 😴",
 excited:"Write your goals ✍️",
 stressed:"Take a short walk 🚶",
-calm:"Do 5-min meditation 🧘"
+calm:"Try 5-min meditation 🧘"
 };
 
 function selectMood(mood){
- quote.innerText=quotes[mood];
- tip.innerText=tips[mood];
- popup.style.display="block";
+ document.getElementById("quote").innerText=quotes[mood];
+ document.getElementById("tip").innerText=tips[mood];
+ document.getElementById("popup").style.display="block";
 
  let week=JSON.parse(localStorage.getItem("week"))||[];
  week.push(mood);
