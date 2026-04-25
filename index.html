@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MindBloom 🌸</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+font-family:'Nunito',sans-serif;
+margin:0;
+background:linear-gradient(120deg,#ffd6e8,#c9f2ff);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+.card{
+width:420px;
+background:rgba(255,255,255,0.9);
+border-radius:25px;
+padding:25px;
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
+text-align:center;
+}
+.hidden{display:none}
+input,textarea{
+width:90%;padding:12px;margin:8px;border-radius:12px;border:1px solid #eee;
+}
+button{
+background:#ff6fa5;color:white;border:none;padding:10px 20px;
+border-radius:12px;cursor:pointer;margin:10px;font-weight:bold;
+}
+.moods span{font-size:36px;padding:12px;cursor:pointer;transition:.3s}
+.moods span:hover{transform:scale(1.3)}
+.selected{transform:scale(1.5)}
+.popup{
+position:fixed;top:20px;right:20px;background:#ff6fa5;color:white;
+padding:12px 18px;border-radius:12px;display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="popup" id="popup"></div>
+
+<div class="card" id="onboard">
+<h1>Welcome to MindBloom 🌸</h1>
+<input id="name" placeholder="Your Name">
+<input id="city" placeholder="City">
+<input id="email" placeholder="Email">
+<button onclick="startApp()">Start Journey ✨</button>
+</div>
+
+<div class="card hidden" id="app">
+<h2 id="greet"></h2>
+
+<h3>How do you feel today?</h3>
+<div class="moods">
+<span onclick="selectMood('Happy')">😄</span>
+<span onclick="selectMood('Okay')">😐</span>
+<span onclick="selectMood('Sad')">😢</span>
+<span onclick="selectMood('Angry')">😡</span>
+<span onclick="selectMood('Tired')">😴</span>
+</div>
+
+<textarea id="note" placeholder="What's on your mind?"></textarea>
+<button onclick="nextStep()">Next ➡️</button>
+
+<div id="taskBox" class="hidden">
+<h3>🌿 Today's Self-Care Task</h3>
+<p id="task"></p>
+<button onclick="finishDay()">Finish Day 💖</button>
+</div>
+
+<div id="dashboard" class="hidden">
+<h3 id="streak"></h3>
+<p id="insight"></p>
+<canvas id="chart"></canvas>
+<button onclick="resetWeek()">Reset Week</button>
+</div>
+</div>
+
+<script>
+let selectedMood="";
+let chart;
+let popupBox=document.getElementById("popup");
+
+const tasks=[
+"Take a 10 min walk 🌿","Drink 2 glasses of water 💧",
+"Write 3 gratitudes ✨","Stretch body 🧘‍♀️",
+"Listen favourite music 🎵","Deep breathing 🌬️"
+];
+
+function popup(msg){
+popupBox.innerText=msg;
+popupBox.style.display="block";
+setTimeout(()=>popupBox.style.display="none",2000);
+}
+
+function startApp(){
+let user={name:name.value,city:city.value,email:email.value};
+localStorage.setItem("user",JSON.stringify(user));
+onboard.classList.add("hidden");
+app.classList.remove("hidden");
+greet.innerText="Good to see you, "+user.name+" 🌸";
+loadDashboard();
+}
+
+function selectMood(m){
+selectedMood=m;
+document.querySelectorAll(".moods span")
+.forEach(e=>e.classList.remove("selected"));
+event.target.classList.add("selected");
+}
+
+function nextStep(){
+if(!selectedMood) return popup("Select a mood 😊");
+taskBox.classList.remove("hidden");
+task.innerText=tasks[new Date().getDay()%tasks.length];
+}
+
+function finishDay(){
+let data=JSON.parse(localStorage.getItem("data"))||[];
+data.push({date:new Date().toLocaleDateString(),mood:selectedMood});
+localStorage.setItem("data",JSON.stringify(data));
+popup("You showed up for yourself today 💖");
+loadDashboard();
+}
+
+function loadDashboard(){
+dashboard.classList.remove("hidden");
+let data=JSON.parse(localStorage.getItem("data"))||[];
+streak.innerHTML="🔥 Streak: "+data.length+" days";
+
+let counts={Happy:0,Okay:0,Sad:0,Angry:0,Tired:0};
+data.forEach(d=>counts[d.mood]++);
+
+let maxMood=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
+insight.innerText="This week you felt mostly "+maxMood+" 💫";
+
+if(chart) chart.destroy();
+chart=new Chart(chart,{
+type:'doughnut',
+data:{labels:Object.keys(counts),
+datasets:[{data:Object.values(counts)}]}
+});
+}
+
+function resetWeek(){
+localStorage.removeItem("data");
+popup("New week, fresh start 🌸");
+location.reload();
+}
+</script>
+
+</body>
+</html>
