@@ -1,57 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MindBloom 🌸</title>
+<title>MindBloom</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
 
-<!-- PROFILE SCREEN -->
-<div id="profileScreen" class="centerCard">
-  <h1>Welcome to MindBloom 🌸</h1>
-  <input id="name" placeholder="Your Name">
-  <input id="email" placeholder="Email">
-  <input id="city" placeholder="City">
-  <button onclick="saveProfile()">Start My Journey ✨</button>
+<!-- PROFILE -->
+<div id="profile" class="card">
+<h1>MindBloom 🌸</h1>
+<input id="name" placeholder="Your Name">
+<input id="email" placeholder="Email">
+<input id="city" placeholder="City">
+<button onclick="saveProfile()">Start Journey ✨</button>
 </div>
 
-<!-- MAIN APP -->
-<div id="app" class="container hidden">
-
+<!-- APP -->
+<div id="app" class="card hidden">
 <h1 id="welcome"></h1>
-<h3 id="dailyTask"></h3>
 
-<h2>How do you feel today?</h2>
+<h3 id="task"></h3>
 
-<div class="moods">
-<button class="mood" onclick="selectMood('Happy')">😄</button>
-<button class="mood" onclick="selectMood('Okay')">🙂</button>
-<button class="mood" onclick="selectMood('Sad')">😢</button>
-<button class="mood" onclick="selectMood('Angry')">😡</button>
-<button class="mood" onclick="selectMood('Tired')">😴</button>
+<h2>Select your mood today</h2>
+
+<div class="moodRow">
+<span class="mood" onclick="selectMood(this,'Happy')">😄</span>
+<span class="mood" onclick="selectMood(this,'Okay')">🙂</span>
+<span class="mood" onclick="selectMood(this,'Sad')">😢</span>
+<span class="mood" onclick="selectMood(this,'Angry')">😡</span>
+<span class="mood" onclick="selectMood(this,'Tired')">😴</span>
 </div>
 
-<textarea id="note" placeholder="Write your thoughts..."></textarea>
-<button onclick="saveMood()">Save Today 💖</button>
+<h3 id="thought"></h3>
 
-<h3>🔥 Streak: <span id="streak">0</span> days</h3>
-<p id="weeklyReport"></p>
+<h3>🔥 Streak: <span id="streak">0</span></h3>
 
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup">
-  <div class="popup-content">
-    <h2 id="popupTitle"></h2>
-    <p id="popupText"></p>
-    <button onclick="closePopup()">Continue</button>
-  </div>
 </div>
 
 <script src="script.js"></script>
