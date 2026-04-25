@@ -6,34 +6,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-*{box-sizing:border-box}
-
 body{
   font-family:'Segoe UI',sans-serif;
   margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  text-align:center;
   background:linear-gradient(135deg,#89f7fe,#66a6ff,#c3cfe2);
-  transition:.4s;
+  color:#333;
+  transition:0.4s;
 }
-
-/* Dark Mode */
 .dark{
   background:linear-gradient(135deg,#141e30,#243b55);
   color:white;
 }
-
-/* Main wrapper */
-.app{
-  width:100%;
-  max-width:500px;
-  text-align:center;
-  padding:20px;
-}
-
-/* Moon */
 .moon{
  position:fixed;
  bottom:20px;
@@ -41,31 +25,27 @@ body{
  font-size:38px;
  cursor:pointer;
 }
-
-/* Card */
+.slide{display:none;padding:40px;}
+.active{display:block;}
 .card{
  background:white;
+ max-width:420px;
+ margin:auto;
  padding:30px;
- border-radius:22px;
- box-shadow:0 15px 35px rgba(0,0,0,.15);
+ border-radius:20px;
+ box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
-.dark .card{background:#1e293b}
-
-.slide{display:none}
-.active{display:block}
-
+.dark .card{background:#1e293b;}
 input,select{
- width:100%;
- padding:14px;
- margin:10px 0;
- border-radius:12px;
+ width:90%;
+ padding:12px;
+ margin:12px;
+ border-radius:10px;
  border:1px solid #ccc;
  font-size:16px;
 }
-
 button{
- width:100%;
- padding:16px;
+ padding:16px 40px;
  border:none;
  border-radius:30px;
  background:#4facfe;
@@ -74,25 +54,19 @@ button{
  cursor:pointer;
  margin-top:15px;
 }
-
-.emoji{font-size:36px;cursor:pointer;padding:8px}
-.emoji:hover{transform:scale(1.2)}
-
-#popup{display:none;background:#f0f8ff;padding:20px;border-radius:15px;margin-top:20px;}
-.dark #popup{background:#334155}
-
+.emoji{font-size:38px;cursor:pointer;padding:10px;}
 #quote{font-size:24px;color:#7c3aed;font-weight:bold;}
 #tip{font-size:18px;color:#16a34a;}
 .dark #quote{color:#c084fc;}
-.dark #tip{color:#4ade80}
+.dark #tip{color:#4ade80;}
+#popup{display:none;background:#f0f8ff;padding:20px;border-radius:15px;margin-top:20px;}
+.dark #popup{background:#334155;}
 </style>
 </head>
 
 <body>
 
 <div class="moon" onclick="toggleTheme()">🌙</div>
-
-<div class="app">
 <h1>MindGlow</h1>
 <p>Track your mind, glow daily</p>
 
@@ -142,37 +116,41 @@ button{
 </div>
 </div>
 
-</div>
-
 <script>
+// 🌙 Dark Mode
 function toggleTheme(){
  document.body.classList.toggle("dark");
+ localStorage.setItem("theme",document.body.classList.contains("dark"));
 }
+if(localStorage.getItem("theme")=="true") document.body.classList.add("dark");
 
+// 🔹 Autofill when email typed
 document.getElementById("email").addEventListener("blur",function(){
  let users=JSON.parse(localStorage.getItem("users"))||{};
- if(users[this.value]){
-  document.getElementById("name").value=users[this.value].name;
-  document.getElementById("gender").value=users[this.value].gender;
+ let email=this.value.trim();
+ if(users[email]){
+   document.getElementById("name").value=users[email].name;
+   document.getElementById("gender").value=users[email].gender;
  }
 });
 
+// 🔹 SAVE USER + VALIDATION (FIXED)
 function saveUser(){
- let name=document.getElementById("name").value.trim();
- let email=document.getElementById("email").value.trim();
- let gender=document.getElementById("gender").value;
+ let name = document.getElementById("name").value.trim();
+ let email = document.getElementById("email").value.trim();
+ let gender = document.getElementById("gender").value;
 
- if(!name||!email||!gender){
-  alert("Please fill all details 😊");
-  return;
+ if(name==="" || email==="" || gender===""){
+   alert("Please fill ALL details before continuing 😊");
+   return;
  }
 
  let users=JSON.parse(localStorage.getItem("users"))||{};
  if(!users[email]){
-  if(confirm("Save your details?")){
-    users[email]={name,gender};
-    localStorage.setItem("users",JSON.stringify(users));
-  }
+   if(confirm("Do you want to save your details for next time?")){
+     users[email]={name,gender};
+     localStorage.setItem("users",JSON.stringify(users));
+   }
  }
 
  showSlide(2);
@@ -184,8 +162,27 @@ function showSlide(n){
  document.getElementById("slide"+n).classList.add("active");
 }
 
-const quotes={happy:"You’re glowing today ✨",sad:"Storms don’t last forever ☀️",angry:"Pause. Breathe. Reset 🌿",love:"Your heart is beautiful 💖",tired:"Rest is productive 💤",excited:"Big things coming 🚀",stressed:"One step at a time 🌼",calm:"Peace looks good on you 🌸"};
-const tips={happy:"Share your smile 😊",sad:"Call loved one 💛",angry:"Take a break 🌿",love:"Write gratitude 💖",tired:"Drink water 😴",excited:"Write goals ✍️",stressed:"Short walk 🚶",calm:"Meditation 🧘"};
+const quotes={
+happy:"You’re glowing today ✨",
+sad:"Storms don’t last forever ☀️",
+angry:"Pause. Breathe. Reset 🌿",
+love:"Your heart is beautiful 💖",
+tired:"Rest is productive 💤",
+excited:"Big things coming 🚀",
+stressed:"One step at a time 🌼",
+calm:"Peace looks good on you 🌸"
+};
+
+const tips={
+happy:"Share your smile today 😊",
+sad:"Call a loved one 💛",
+angry:"Take a break 🌿",
+love:"Write gratitude list 💖",
+tired:"Drink water 😴",
+excited:"Write goals ✍️",
+stressed:"Take a short walk 🚶",
+calm:"Try meditation 🧘"
+};
 
 function selectMood(mood){
  document.getElementById("quote").innerText=quotes[mood];
